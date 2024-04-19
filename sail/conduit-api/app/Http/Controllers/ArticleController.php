@@ -34,4 +34,11 @@ class ArticleController extends Controller
 
         return new ArticleResource($article);
     }
+
+    public function destroy(Request $request, Article $article)
+    {
+        $article->delete();
+
+        return response()->noContent();
+    }
 }

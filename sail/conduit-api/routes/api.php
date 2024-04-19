@@ -19,4 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get("articles", [ArticleController::class, 'index']);
+
+Route::apiResource("articles", ArticleController::class)->only([
+    "index","show"
+]);

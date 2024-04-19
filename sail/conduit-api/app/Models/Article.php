@@ -12,4 +12,9 @@ class Article extends Model
     protected $hidden = [
         'updated_at'
     ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'title';
+    }
 }

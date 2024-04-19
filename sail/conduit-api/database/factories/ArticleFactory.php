@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,6 +22,7 @@ class ArticleFactory extends Factory
             // 255文字以内のランダムな文字列を生成
             "description" => $this->faker->text(255),
             "body" => $this->faker->paragraph,
+            "author_id" => User::all()->random()->id,
             'created_at' => $this->faker->dateTimeThisYear,
             'updated_at' => $this->faker->dateTimeThisYear,
         ];

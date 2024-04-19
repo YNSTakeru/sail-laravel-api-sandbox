@@ -8,6 +8,7 @@ use App\Http\Resources\ArticleCollection;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class ArticleController extends Controller
 {
@@ -18,7 +19,10 @@ class ArticleController extends Controller
 
     $page = floor($offset / $limit) + 1;
 
-    return new ArticleCollection(Article::paginate($limit, ["*"], "page", $page));
+        $articles = QueryBuilder::for(Article::class)
+            ->defaultSort("-created_at")->allowedSorts(["title", "description", "body"])->paginate($limit, ["*"], "page", $page);
+
+    return new ArticleCollection($articles);
     }
 
     public function show(Request $request, Article $article){

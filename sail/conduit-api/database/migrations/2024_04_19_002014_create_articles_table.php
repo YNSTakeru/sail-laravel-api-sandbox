@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
-            $table->string('title',255)->nullable(false);
+            // MySQLのみ
+            $table->string('title',255)->collation('utf8mb4_general_ci')->unique();
             $table->string('description',255)->nullable(false);
             $table->text('body')->nullable(false);
             $table->foreignId('author_id')->constrained("users");
+            $table->integer('favoritesCount')->default(0);
+            $table->string("slug")->unique()->nullable(false);
             $table->timestamps();
         });
     }

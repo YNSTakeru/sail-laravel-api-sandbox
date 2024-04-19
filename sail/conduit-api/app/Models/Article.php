@@ -22,9 +22,10 @@ class Article extends Model
         'updated_at'
     ];
 
-    public function getRouteKeyName(): string
+    // Article.php
+    public function getRouteKeyName()
     {
-        return 'title';
+        return 'slug';
     }
 
     public function creator(): BelongsTo

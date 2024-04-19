@@ -22,7 +22,7 @@ class UpdateArticleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "title" => "required|sometimes|max:255|unique:articles",
+            "title" => "required|sometimes|max:255|unique:articles,title,i",
             "description" => "required|sometimes|max:255",
             "body" => "required|sometimes|max:1000",
         ];

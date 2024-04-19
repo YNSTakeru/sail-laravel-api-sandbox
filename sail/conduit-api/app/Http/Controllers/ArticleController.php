@@ -15,18 +15,19 @@ class ArticleController extends Controller
 {
     public function index(Request $request){
 
-    $limit = $request->get("limit", 20);
-    $offset = $request->get("offset", 0);
+        $limit = $request->get("limit", 20);
+        $offset = $request->get("offset", 0);
 
-    $page = floor($offset / $limit) + 1;
+        $page = floor($offset / $limit) + 1;
 
         $articles = QueryBuilder::for(Article::class)
             ->defaultSort("-created_at")->allowedSorts(["title", "description", "body"])->paginate($limit, ["*"], "page", $page);
 
-    return new ArticleCollection($articles);
+        return new ArticleCollection($articles);
     }
 
     public function show(Request $request, Article $article){
+
         return new ArticleResource($article);
     }
 

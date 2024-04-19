@@ -17,12 +17,15 @@ class ArticleFactory extends Factory
      */
     public function definition(): array
     {
+        $title = $this->faker->unique()->sentence;
+
         return [
-            'title' => $this->faker->unique()->sentence,
-            // 255文字以内のランダムな文字列を生成
+            'title' => $title,
             "description" => $this->faker->text(255),
             "body" => $this->faker->paragraph,
             "author_id" => User::all()->random()->id,
+            "favoritesCount" => $this->faker->numberBetween(0, 100),
+            "slug" => \Str::slug($title),
             'created_at' => $this->faker->dateTimeThisYear,
             'updated_at' => $this->faker->dateTimeThisYear,
         ];

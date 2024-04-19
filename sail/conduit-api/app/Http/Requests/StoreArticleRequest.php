@@ -23,7 +23,7 @@ class StoreArticleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "title" => "required|max:255|unique:articles",
+            "title" => "required|max:255|unique:articles,title,i",
             "description" => "required|max:255",
             "body" => "required|max:1000",
         ];

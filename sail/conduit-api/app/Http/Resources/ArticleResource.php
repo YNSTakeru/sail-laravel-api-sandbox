@@ -12,10 +12,4 @@ class ArticleResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
-    {
-
-        $data = parent::toArray($request);
-        return $data;
-    }
 }

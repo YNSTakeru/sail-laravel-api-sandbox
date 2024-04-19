@@ -18,7 +18,8 @@ class ArticleFactory extends Factory
     {
         return [
             'title' => $this->faker->unique()->sentence,
-            "description" => $this->faker->paragraph,
+            // 255文字以内のランダムな文字列を生成
+            "description" => $this->faker->text(255),
             "body" => $this->faker->paragraph,
             'created_at' => $this->faker->dateTimeThisYear,
             'updated_at' => $this->faker->dateTimeThisYear,

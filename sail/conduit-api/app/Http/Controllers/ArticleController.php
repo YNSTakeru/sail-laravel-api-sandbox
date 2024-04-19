@@ -12,7 +12,13 @@ use Illuminate\Http\Request;
 class ArticleController extends Controller
 {
     public function index(Request $request){
-    return new ArticleCollection(Article::all());
+
+    $limit = $request->get("limit", 20);
+    $offset = $request->get("offset", 0);
+
+    $page = floor($offset / $limit) + 1;
+
+    return new ArticleCollection(Article::paginate($limit, ["*"], "page", $page));
     }
 
     public function show(Request $request, Article $article){

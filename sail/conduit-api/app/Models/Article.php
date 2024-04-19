@@ -6,6 +6,7 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Auth;
 
 class Article extends Model
@@ -31,5 +32,9 @@ class Article extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
+    }
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, ArticleTagPivot::class, 'article_id', 'tag_name');
     }
 }

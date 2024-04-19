@@ -9,6 +9,12 @@ class Article extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        "title",
+        "description",
+        "body"
+    ];
+
     protected $hidden = [
         'updated_at'
     ];

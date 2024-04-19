@@ -8,6 +8,7 @@ use App\Http\Resources\ArticleCollection;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ArticleController extends Controller
@@ -32,7 +33,7 @@ class ArticleController extends Controller
     public function store(StoreArticleRequest $request){
         $validated = $request->validated();
 
-        $article = Article::create($validated);
+        $article = Auth::user()->articles()->create($validated);
 
         return new ArticleResource($article);
     }

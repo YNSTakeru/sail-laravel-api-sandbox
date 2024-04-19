@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('description',255)->nullable(false);
             $table->text('body')->nullable(false);
             $table->foreignId('author_id')->constrained("users");
-            $table->integer('favoritesCount')->default(0);
             $table->string("slug")->unique()->nullable(false);
             $table->timestamps();
         });

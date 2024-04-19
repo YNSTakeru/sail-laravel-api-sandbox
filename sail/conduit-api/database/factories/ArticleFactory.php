@@ -24,7 +24,6 @@ class ArticleFactory extends Factory
             "description" => $this->faker->text(255),
             "body" => $this->faker->paragraph,
             "author_id" => User::all()->random()->id,
-            "favoritesCount" => $this->faker->numberBetween(0, 100),
             "slug" => \Str::slug($title),
             'created_at' => $this->faker->dateTimeThisYear,
             'updated_at' => $this->faker->dateTimeThisYear,

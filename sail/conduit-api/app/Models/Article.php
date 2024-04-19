@@ -29,12 +29,17 @@ class Article extends Model
         return 'slug';
     }
 
-    public function creator(): BelongsTo
+    public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
     }
     public function tags(): BelongsToMany
     {
-        return $this->belongsToMany(Tag::class, ArticleTagPivot::class, 'article_id', 'tag_name');
+        return $this->belongsToMany(Tag::class, ArticleTagPivot::class, 'article_id', 'tag_id');
+    }
+
+    public function favoriteUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, UserFavoriteArticlePivot::class, 'article_id', 'user_id');
     }
 }

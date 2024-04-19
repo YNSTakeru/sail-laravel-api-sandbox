@@ -27,7 +27,6 @@ class ArticleController extends Controller
     }
 
     public function show(Request $request, Article $article){
-
         return new ArticleResource($article);
     }
 

@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('article_tag_pivot', function (Blueprint $table) {
             $table->foreignId("article_id")->constrained("articles")->onDeleteCascade();
-            $table->string("tag_name");
-            $table->foreign("tag_name")->references("name")->on("tags")->onDeleteCascade();
-            $table->primary(["article_id", "tag_name"]);
+            $table->foreignId("tag_id")->constrained("tags")->onDeleteCascade();
+            $table->primary(["article_id", "tag_id"]);
         });
     }
 

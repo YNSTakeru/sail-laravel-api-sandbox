@@ -22,7 +22,7 @@ class ArticleTagPivotSeeder extends Seeder
 
             foreach($tags as $tag)
             {
-                $article->tags()->attach([$tag->name]);
+                $article->tags()->attach([$tag->id]);
             }
         }
     }

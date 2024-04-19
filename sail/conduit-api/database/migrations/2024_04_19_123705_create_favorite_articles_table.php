@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tags', function (Blueprint $table) {
+        Schema::create('favorite_articles', function (Blueprint $table) {
             $table->id();
-            $table->string("name",255)->unique()->nullable(false);
+            $table->foreignId("user_id")->constrained("users")->onDeleteCascade();
+            $table->foreignId("article_id")->constrained("articles")->onDeleteCascade();
+            $table->unique(["user_id", "article_id"]);
             $table->timestamps();
         });
     }
@@ -23,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tags');
+        Schema::dropIfExists('favorite_articles');
     }
 };

@@ -30,6 +30,6 @@ class DatabaseSeeder extends Seeder
         Article::factory(100)->create();
         Tag::factory(50)->create();
 
-        $this->call(ArticleTagPivotSeeder::class);
+        $this->call([ArticleTagPivotSeeder::class, UserFavoriteArticlePIvotSeeder::class]);
     }
 }

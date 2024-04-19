@@ -11,6 +11,6 @@ class Tag extends Model
 
     public function articles()
     {
-        return $this->belongsToMany(Article::class, ArticleTagPivot::class, 'article_id', 'tag_name');
+        return $this->belongsToMany(Article::class, ArticleTagPivot::class, 'article_id', 'tag_id');
     }
 }

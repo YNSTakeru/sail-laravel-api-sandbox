@@ -30,4 +30,5 @@ Route::apiResource("articles", ArticleController::class)->only(["index", "show"]
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource("articles", ArticleController::class)->except(["index", "show"]);
+    Route::put("articles/{id}/favorite", [ArticleController::class, "updateFavorite"]);
 });

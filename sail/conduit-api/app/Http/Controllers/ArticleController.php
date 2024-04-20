@@ -13,7 +13,8 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class ArticleController extends Controller
 {
-    public function index(Request $request){
+    public function index(Request $request)
+    {
 
         $limit = $request->get("limit", 20);
         $offset = $request->get("offset", 0);
@@ -26,11 +27,13 @@ class ArticleController extends Controller
         return new ArticleCollection($articles);
     }
 
-    public function show(Request $request, Article $article){
+    public function show(Request $request, Article $article)
+    {
         return new ArticleResource($article);
     }
 
-    public function store(StoreArticleRequest $request){
+    public function store(StoreArticleRequest $request)
+    {
         $validated = $request->validated();
 
         $article = Auth::user()->articles()->create($validated);
@@ -38,7 +41,8 @@ class ArticleController extends Controller
         return new ArticleResource($article);
     }
 
-    public function update(UpdateArticleRequest $request, Article $article){
+    public function update(UpdateArticleRequest $request, Article $article)
+    {
         $validated = $request->validated();
 
         $article->update($validated);
@@ -49,6 +53,21 @@ class ArticleController extends Controller
     public function destroy(Request $request, Article $article)
     {
         $article->delete();
+
+        return response()->noContent();
+    }
+
+    public function updateFavorite(Request $request, $id)
+    {
+        $user = Auth::user();
+        $article = Article::find(1);
+
+
+        if($user->favoriteArticles()->where("article_id", $article->id)->exists()){
+            $user->favoriteArticles()->detach($article->id);
+        }else{
+            $user->favoriteArticles()->attach($article->id);
+        }
 
         return response()->noContent();
     }

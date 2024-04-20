@@ -22,8 +22,9 @@ class ArticleResource extends JsonResource
         $favorited = false;
 
         if ($isAuthenticated) {
-            $favorited = $this->favoritedUsers->contains(auth()->user());
+            $favorited = $this->favoriteUsers->contains(auth()->user());
         }
+
         return [
             "slug" => \Str::slug($this->title),
             "title" => $this->title,

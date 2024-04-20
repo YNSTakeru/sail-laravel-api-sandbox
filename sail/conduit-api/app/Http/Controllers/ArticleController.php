@@ -35,6 +35,8 @@ class ArticleController extends Controller
     public function store(StoreArticleRequest $request)
     {
         $validated = $request->validated();
+        $validated["slug"] = \Str::slug($validated["title"]);
+
 
         $article = Auth::user()->articles()->create($validated);
 
@@ -60,15 +62,18 @@ class ArticleController extends Controller
     public function updateFavorite(Request $request, $id)
     {
         $user = Auth::user();
-        $article = Article::find(1);
-
+        $article = Article::find($id);
+        $flag = "exists";
 
         if($user->favoriteArticles()->where("article_id", $article->id)->exists()){
             $user->favoriteArticles()->detach($article->id);
+            $article->favoriteUsers()->detach($user->id);
         }else{
+            $flag = "not exists";
             $user->favoriteArticles()->attach($article->id);
+            $article->favoriteUsers()->attach($user->id);
         }
 
-        return response()->noContent();
+        return response()->json([$flag]);
     }
 }

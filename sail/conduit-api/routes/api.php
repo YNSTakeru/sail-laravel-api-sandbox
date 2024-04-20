@@ -16,11 +16,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post("login", [AuthController::class, "login"]);
-Route::post("register", [AuthController::class, "register"]);
+Route::post("users/login", [AuthController::class, "login"]);
+Route::post("users", [AuthController::class, "register"]);
 
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
@@ -28,7 +28,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::apiResource("articles", ArticleController::class)->only(["index", "show"]);
 
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:api')->group(function () {
     Route::apiResource("articles", ArticleController::class)->except(["index", "show"]);
-    Route::put("articles/{id}/favorite", [ArticleController::class, "updateFavorite"]);
+    Route::put("articles/{slug}/favorite", [ArticleController::class, "updateFavorite"]);
 });

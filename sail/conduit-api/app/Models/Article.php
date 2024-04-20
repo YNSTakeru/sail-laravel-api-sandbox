@@ -16,7 +16,8 @@ class Article extends Model
     protected $fillable = [
         "title",
         "description",
-        "body"
+        "body",
+        "slug"
     ];
 
     protected $hidden = [

@@ -24,8 +24,10 @@ Route::apiResource('articles', ArticleController::class)->only(['index', 'show']
 
 
 Route::middleware('auth:api')->group(function () {
-
-    Route::apiResource('user', UserController::class)->only(['index']);
+    Route::controller(UserController::class)->group(function () {
+        Route::get('user', 'show');
+        Route::put('user', 'update');
+    });
 
     Route::apiResource('articles', ArticleController::class)->except(['index', 'show']);
     Route::put('articles/{slug}/favorite', [ArticleController::class, 'updateFavorite']);

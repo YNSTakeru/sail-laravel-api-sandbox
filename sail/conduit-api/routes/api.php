@@ -16,16 +16,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post("users/login", [AuthController::class, "login"]);
-Route::post("users", [AuthController::class, "register"]);
+Route::post('users/login', [AuthController::class, 'login']);
+Route::post('users', [AuthController::class, 'register']);
 
-Route::apiResource("articles", ArticleController::class)->only(["index", "show"]);
+Route::apiResource('articles', ArticleController::class)->only(['index', 'show']);
 
 
 Route::middleware('auth:api')->group(function () {
-    Route::get("user", function (Request $request) {
+    Route::get('user', function (Request $request) {
         return $request->user();
     });
-    Route::apiResource("articles", ArticleController::class)->except(["index", "show"]);
-    Route::put("articles/{slug}/favorite", [ArticleController::class, "updateFavorite"]);
+    Route::apiResource('articles', ArticleController::class)->except(['index', 'show']);
+    Route::put('articles/{slug}/favorite', [ArticleController::class, 'updateFavorite']);
 });

@@ -23,7 +23,7 @@ class ArticleResource extends JsonResource
         $favorited = false;
 
         if ($isAuthenticated) {
-           $favorited = $user->favoriteArticles()->where("article_id", $this->id)->exists();
+            $favorited = $user->favoriteArticles()->where("article_id", $this->id)->exists();
         }
 
         return [

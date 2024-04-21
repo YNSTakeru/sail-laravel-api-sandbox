@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,9 +24,9 @@ Route::apiResource('articles', ArticleController::class)->only(['index', 'show']
 
 
 Route::middleware('auth:api')->group(function () {
-    Route::get('user', function (Request $request) {
-        return $request->user();
-    });
+
+    Route::apiResource('user', UserController::class)->only(['index']);
+
     Route::apiResource('articles', ArticleController::class)->except(['index', 'show']);
     Route::put('articles/{slug}/favorite', [ArticleController::class, 'updateFavorite']);
 });

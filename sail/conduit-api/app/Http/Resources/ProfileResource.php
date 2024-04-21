@@ -8,14 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ProfileResource extends JsonResource
 {
-    protected $userToFollowId;
-
-    public function __construct($resource, $userToFollowId = null)
-    {
-        parent::__construct($resource);
-        $this->userToFollowId = $userToFollowId;
-    }
-
     public static $wrap = 'profile';
     /**
      * Transform the resource into an array.
@@ -28,7 +20,7 @@ class ProfileResource extends JsonResource
         $following = false;
         $user = Auth::guard('api')->user();
         if ($user) {
-            $following = $user->followers->contains($this->userToFollowId) ? true : false;
+            $following = $user->followers->contains($this->id) ? true : false;
         }
 
         return [

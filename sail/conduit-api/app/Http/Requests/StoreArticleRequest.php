@@ -11,8 +11,16 @@ class StoreArticleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // 認証しているユーザーのみがリクエストを送信できるように後ほど変更する
-        return true;
+        return auth()->check();
+    }
+
+    protected function prepareForValidation()
+    {
+        if(is_string($this->tagList)) {
+            $this->merge([
+                'tagList' => json_decode($this->tagList, true),
+            ]);
+        }
     }
 
     /**
@@ -22,10 +30,13 @@ class StoreArticleRequest extends FormRequest
      */
     public function rules(): array
     {
+
         return [
-            "title" => "required|max:255|unique:articles,title,i",
-            "description" => "required|max:255",
-            "body" => "required|max:1000",
+            'title' => 'required|max:255|unique:articles,title,i',
+            'description' => 'required|max:255',
+            'body' => 'required|max:1000',
+            'tagList' => ['array', 'max:10', 'unique_in_array'],
+            'tagList.*' => ['string', 'max:255'],
         ];
     }
 }

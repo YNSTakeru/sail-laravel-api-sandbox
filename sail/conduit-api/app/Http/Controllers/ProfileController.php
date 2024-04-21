@@ -29,7 +29,7 @@ class ProfileController extends Controller
         }
 
         $user->followers()->attach([$userToFollow->id]);
-        return new ProfileResource($user, $userToFollow->id);
+        return new ProfileResource($userToFollow);
     }
 
     public function unfollow($id)

@@ -16,9 +16,9 @@ class StoreArticleRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        if(is_string($this->tagList)) {
+        if(is_string($this['article']['tagList'])) {
             $this->merge([
-                'tagList' => json_decode($this->tagList, true),
+                'article.tagList' => json_decode($this['article']['tagList'], true),
             ]);
         }
     }
@@ -32,11 +32,11 @@ class StoreArticleRequest extends FormRequest
     {
 
         return [
-            'title' => 'required|max:255|unique:articles,title,i',
-            'description' => 'required|max:255',
-            'body' => 'required|max:1000',
-            'tagList' => ['array', 'max:10', 'unique_in_array'],
-            'tagList.*' => ['string', 'max:255'],
+            'article.title' => 'required|max:255|unique:articles,title,i',
+            'article.description' => 'required|max:255',
+            'article.body' => 'required|max:1000',
+            'article.tagList' => ['array', 'max:10', 'unique_in_array'],
+            'article.tagList.*' => ['string', 'max:255'],
         ];
     }
 }

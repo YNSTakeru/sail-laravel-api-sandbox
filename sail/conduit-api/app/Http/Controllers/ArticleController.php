@@ -36,17 +36,17 @@ class ArticleController extends Controller
     public function store(StoreArticleRequest $request)
     {
         $validated = $request->validated();
-        $validated['slug'] = \Str::slug($validated['title']);
-        $tagList = $validated['tagList'];
+        $validated['article']['slug'] = \Str::slug($validated['article']['title']);
+        $tagList = $validated['article']['tagList'];
 
         foreach ($tagList as $tagName) {
             $tag = Tag::firstOrCreate(['name' => $tagName]);
             $tagIds[] = $tag->id;
         }
 
-        unset($validated['tagList']);
+        unset($validated['article']['tagList']);
 
-        $article = Auth::user()->articles()->create($validated);
+        $article = Auth::user()->articles()->create($validated['article']);
 
         $article->tags()->sync($tagIds);
 

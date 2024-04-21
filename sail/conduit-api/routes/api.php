@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -26,16 +27,21 @@ Route::apiResource('articles', ArticleController::class)->only(['index', 'show']
 
 Route::apiResource('profiles', ProfileController::class)->only(['show']);
 
+
 Route::middleware('auth:api')->group(function () {
-    Route::controller(UserController::class)->group(function () {
-        Route::get('user', 'show');
-        Route::put('user', 'update');
+    Route::prefix('user')->controller(UserController::class)->group(function () {
+        Route::get('', 'show');
+        Route::put('', 'update');
     });
     Route::apiResource('articles', ArticleController::class)->except(['index', 'show']);
-    Route::put('articles/{slug}/favorite', [ArticleController::class, 'updateFavorite']);
 
-    Route::controller(ProfileController::class)->group(function () {
-        Route::post('profiles/{id}/follow', 'follow');
-        Route::delete('profiles/{id}/follow', 'unfollow');
+    Route::prefix('profiles')->controller(ProfileController::class)->group(function () {
+        Route::post('/{id}/follow', 'follow');
+        Route::delete('/{id}/follow', 'unfollow');
+    });
+
+    Route::prefix('articles')->group(function () {
+        Route::put('/{slug}/favorite', [ArticleController::class, 'updateFavorite']);
+        Route::post('/{slug}/comments', [CommentController::class, 'store']);
     });
 });

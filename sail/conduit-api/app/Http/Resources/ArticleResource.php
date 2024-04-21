@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ArticleResource extends JsonResource
 {
+    public static $wrap = 'article';
     /**
      * Transform the resource into an array.
      *

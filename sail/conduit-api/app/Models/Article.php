@@ -14,10 +14,10 @@ class Article extends Model
     use HasFactory;
 
     protected $fillable = [
-        "title",
-        "description",
-        "body",
-        "slug"
+        'title',
+        'description',
+        'body',
+        'slug'
     ];
 
     protected $hidden = [
@@ -37,6 +37,11 @@ class Article extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, ArticleTagPivot::class, 'article_id', 'tag_id');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 
     public function favoriteUsers(): BelongsToMany

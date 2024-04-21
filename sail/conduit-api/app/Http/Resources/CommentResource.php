@@ -2,11 +2,16 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Article;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class CommentResource extends JsonResource
 {
+    public static $wrap = 'comment';
+
     /**
      * Transform the resource into an array.
      *
@@ -14,6 +19,26 @@ class CommentResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+
+
+        $user = Auth::guard('api')->user();
+        $isAuthenticated = $user ? true : false;
+
+        $article = Article::find($this->article_id);
+        $author = $article->author;
+
+        return [
+            'id' => $this->id,
+            'createdAt' => $this->created_at,
+            'updatedAt' => $this->updated_at,
+            'body' => $this->body,
+            'author' => [
+                'username' => $author->username,
+                'bio' => $author->bio,
+                'image' => $author->image,
+                'following' => $isAuthenticated ? $user->followers->contains($author->id) : false,
+            ]
+        ];
+
     }
 }

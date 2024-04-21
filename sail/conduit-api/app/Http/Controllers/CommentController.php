@@ -3,22 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCommentRequest;
+use App\Http\Resources\CommentResource;
+use App\Models\Article;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
-    public function store(StoreCommentRequest $request)
+    public function store(StoreCommentRequest $request, $id)
     {
-        $validated = $request->validated();
+        $validated = $request->validated()['comment'];
 
-        return response()->json(['comment' => $validated]);
+        $article = Article::where('slug', $id)->firstOrFail();
 
-        // $comment = new Comment();
-        // $comment->body = $request->input('comment.body');
-        // $comment->user_id = auth()->id();
-        // $comment->article_id = $request->input('comment.article_id');
-        // $comment->save();
+        $article->comments()->create([
+            'body' => $validated['body'],
+            'user_id' => auth()->id()
+        ]);
 
-        // return response()->json(['comment' => $comment]);
+        $comment = $article->comments()->latest()->first();
+
+
+        return new CommentResource($comment);
     }
 }

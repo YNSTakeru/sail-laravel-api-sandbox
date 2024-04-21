@@ -56,6 +56,7 @@ class ArticleController extends Controller
     public function update(UpdateArticleRequest $request, Article $article)
     {
         $validated = $request->validated();
+        $validated['slug'] = \Str::slug($validated['title']);
 
         $article->update($validated);
 

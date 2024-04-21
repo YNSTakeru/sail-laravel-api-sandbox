@@ -36,5 +36,6 @@ Route::middleware('auth:api')->group(function () {
 
     Route::controller(ProfileController::class)->group(function () {
         Route::post('profiles/{id}/follow', 'follow');
+        Route::delete('profiles/{id}/follow', 'unfollow');
     });
 });

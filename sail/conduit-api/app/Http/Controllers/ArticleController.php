@@ -63,17 +63,15 @@ class ArticleController extends Controller
     {
         $user = Auth::user();
         $article = Article::find($id);
-        $flag = "exists";
 
         if($user->favoriteArticles()->where("article_id", $article->id)->exists()){
             $user->favoriteArticles()->detach($article->id);
             $article->favoriteUsers()->detach($user->id);
         }else{
-            $flag = "not exists";
-            $user->favoriteArticles()->attach($article->id);
-            $article->favoriteUsers()->attach($user->id);
+            $user->favoriteArticles()->syncWithoutDetaching($article->id);
+            $article->favoriteUsers()->syncWithoutDetaching($user->id);
         }
 
-        return response()->json([$flag]);
+        return response()->noContent();
     }
 }

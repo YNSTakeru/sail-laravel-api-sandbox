@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\FavoriteArticle;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class ArticleResource extends JsonResource
 {
@@ -17,12 +18,12 @@ class ArticleResource extends JsonResource
 
     public function toArray($request): array
     {
-        // 認証しているユーザーかどうか
-        $isAuthenticated = auth()->check();
+        $user = Auth::guard('api')->user();
+        $isAuthenticated = $user ? true : false;
         $favorited = false;
 
         if ($isAuthenticated) {
-            $favorited = $this->favoriteUsers->contains(auth()->user());
+           $favorited = $user->favoriteArticles()->where("article_id", $this->id)->exists();
         }
 
         return [
@@ -33,7 +34,7 @@ class ArticleResource extends JsonResource
             "tagList" => $this->tags->pluck("name"),
             "createdAt" => $this->created_at,
             "updatedAt" => $this->updated_at,
-            "favorited" => $favorited,
+            "favorited" => $isAuthenticated,
             "favoritesCount"=> $this->favoriteUsers->count(),
             "author" => [
                 "username" => $this->author->username,

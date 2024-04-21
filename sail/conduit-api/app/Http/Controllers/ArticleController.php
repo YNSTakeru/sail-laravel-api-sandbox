@@ -65,8 +65,8 @@ class ArticleController extends Controller
 
     public function destroy(Request $request, Article $article)
     {
+        $article->tags()->detach();
         $article->delete();
-
         return response()->noContent();
     }
 

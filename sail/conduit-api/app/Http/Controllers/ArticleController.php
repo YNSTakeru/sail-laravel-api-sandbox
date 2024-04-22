@@ -8,6 +8,7 @@ use App\Http\Resources\ArticleCollection;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -19,11 +20,39 @@ class ArticleController extends Controller
 
         $limit = $request->get('limit', 20);
         $offset = $request->get('offset', 0);
+        $tag = $request->get('tag');
+        $author = $request->get('author');
+        $favorited = $request->get('favorited');
 
         $page = floor($offset / $limit) + 1;
 
-        $articles = QueryBuilder::for(Article::class)
-            ->defaultSort('-created_at')->allowedSorts(['title', 'description', 'body'])->paginate($limit, ['*'], 'page', $page);
+        $query = QueryBuilder::for(Article::class)
+            ->defaultSort('-created_at')->allowedSorts(['title', 'description', 'body']);
+
+        if($tag) {
+            $query->whereHas('tags', function ($query) use ($tag) {
+                $query->where('name', $tag);
+            });
+        }
+
+        if($author) {
+            $query->whereHas('author', function ($query) use ($author) {
+                $query->where('username', $author);
+            });
+        }
+
+        if($favorited) {
+            $user = User::where('username', $favorited)->first();
+            if($user) {
+                $query->whereHas('favoriteUsers', function ($query) use ($user) {
+                    $query->where('id', $user->id);
+                });
+            }
+
+        }
+
+        $articles = $query->paginate($limit, ['*'], 'page', $page);
+
 
         return new ArticleCollection($articles);
     }

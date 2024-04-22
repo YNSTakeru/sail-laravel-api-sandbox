@@ -4,6 +4,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +28,8 @@ Route::apiResource('articles', ArticleController::class)->only(['index', 'show']
 
 Route::apiResource('profiles', ProfileController::class)->only(['show']);
 
+Route::apiResource('tags', TagController::class)->only(['index']);
+
 Route::get('articles/{slug}/comments', [CommentController::class, 'index']);
 
 Route::middleware('auth:api')->group(function () {
@@ -42,7 +45,6 @@ Route::middleware('auth:api')->group(function () {
     });
 
     Route::prefix('articles')->group(function () {
-        Route::put('/{slug}/favorite', [ArticleController::class, 'updateFavorite']);
         Route::controller(ArticleController::class)->group(function () {
             Route::post('/{slug}/favorite', 'favorite');
             Route::delete('/{slug}/favorite', 'unfavorite');

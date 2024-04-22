@@ -65,18 +65,24 @@ class ArticleController extends Controller
     {
         $validated = $request->validated();
         $validated['article']['slug'] = \Str::slug($validated['article']['title']);
-        $tagList = $validated['article']['tagList'];
+        $tagIds = [];
 
-        foreach ($tagList as $tagName) {
-            $tag = Tag::firstOrCreate(['name' => $tagName]);
-            $tagIds[] = $tag->id;
+        if (isset($validated['article']['tagList'])) {
+            $tagList = $validated['article']['tagList'];
+
+            foreach ($tagList as $tagName) {
+                $tag = Tag::firstOrCreate(['name' => $tagName]);
+                $tagIds[] = $tag->id;
+            }
         }
 
         unset($validated['article']['tagList']);
 
         $article = Auth::user()->articles()->create($validated['article']);
 
-        $article->tags()->sync($tagIds);
+        if(count($tagIds) > 0) {
+            $article->tags()->sync($tagIds);
+        }
 
         return new ArticleResource($article);
     }

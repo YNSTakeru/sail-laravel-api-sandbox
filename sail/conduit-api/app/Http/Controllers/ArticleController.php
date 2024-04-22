@@ -48,7 +48,6 @@ class ArticleController extends Controller
                     $query->where('id', $user->id);
                 });
             }
-
         }
 
         $articles = $query->paginate($limit, ['*'], 'page', $page);
@@ -143,5 +142,25 @@ class ArticleController extends Controller
         $article->favoriteUsers()->detach($user->id);
 
         return new ArticleResource($article);
+    }
+
+    public function feed(Request $request)
+    {
+
+        $limit = $request->get('limit', 20);
+        $offset = $request->get('offset', 0);
+        $page = floor($offset / $limit) + 1;
+
+        $user = Auth::user();
+
+        $query = QueryBuilder::for(Article::class)
+        ->defaultSort('-created_at')->allowedSorts(['title', 'description', 'body'])->whereHas('author', function ($query) use ($user) {
+            $query->whereIn('id', $user->following()->pluck('id'));
+        });
+
+        $articles = $query->paginate($limit, ['*'], 'page', $page);
+
+
+        return new ArticleCollection($articles);
     }
 }

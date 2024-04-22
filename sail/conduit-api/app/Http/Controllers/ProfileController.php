@@ -24,24 +24,29 @@ class ProfileController extends Controller
 
         $user = auth()->user();
 
-        if($user->followers()->find($userToFollow->id)) {
+        if($user->following()->find($userToFollow->id)) {
             return response()->json(['message' => '既にフォローしています。'], 400);
         }
 
-        $user->followers()->attach([$userToFollow->id]);
+        $user->following()->syncWithoutDetaching([$userToFollow->id]);
+        $userToFollow->followers()->syncWithoutDetaching([$user->id]);
         return new ProfileResource($userToFollow);
     }
 
     public function unfollow($id)
     {
         $userToUnfollow = User::where('username', $id)->firstOrFail();
+
         $user = auth()->user();
 
-        if(!$user->followers()->find($userToUnfollow->id)) {
+
+        if(!$user->following()->find($userToUnfollow->id)) {
             return response()->json(['message' => 'フォローしていません。'], 400);
         }
 
-        $user->followers()->detach([$userToUnfollow->id]);
-        return new ProfileResource($user, $userToUnfollow->id);
+        $user->following()->detach([$userToUnfollow->id]);
+        $userToUnfollow->followers()->detach([$user->id]);
+
+        return new ProfileResource($userToUnfollow);
     }
 }

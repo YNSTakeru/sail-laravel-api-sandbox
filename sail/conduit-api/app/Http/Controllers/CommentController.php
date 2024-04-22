@@ -36,8 +36,11 @@ class CommentController extends Controller
         return new CommentResource($comment);
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $slug, $id)
     {
-        return response()->json([$id]);
+        $article = Article::where('slug', $slug)->firstOrFail();
+        $comment = $article->comments()->where('id', $id)->firstOrFail();
+        $comment->delete();
+        return response()->noContent();
     }
 }

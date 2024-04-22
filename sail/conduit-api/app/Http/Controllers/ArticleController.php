@@ -85,4 +85,34 @@ class ArticleController extends Controller
 
         return response()->noContent();
     }
+
+    public function favorite(Request $request, $slug)
+    {
+        $user = Auth::user();
+        $article = Article::where('slug', $slug)->firstOrFail();
+
+        if($user->favoriteArticles()->where('article_id', $article->id)->exists()) {
+            return response()->json(['message' => '記事はすでにお気に入りされています'], 422);
+        }
+
+        $user->favoriteArticles()->syncWithoutDetaching($article->id);
+        $article->favoriteUsers()->syncWithoutDetaching($user->id);
+
+        return new ArticleResource($article);
+    }
+
+    public function unfavorite(Request $request, $slug)
+    {
+        $user = Auth::user();
+        $article = Article::where('slug', $slug)->firstOrFail();
+
+        if(!$user->favoriteArticles()->where('article_id', $article->id)->exists()) {
+            return response()->json(['message' => '記事はお気に入りされていません'], 422);
+        }
+
+        $user->favoriteArticles()->detach($article->id);
+        $article->favoriteUsers()->detach($user->id);
+
+        return new ArticleResource($article);
+    }
 }

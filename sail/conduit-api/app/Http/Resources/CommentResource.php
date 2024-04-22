@@ -19,13 +19,10 @@ class CommentResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-
-
         $user = Auth::guard('api')->user();
         $isAuthenticated = $user ? true : false;
 
-        $article = Article::find($this->article_id);
-        $author = $article->author;
+        $author = User::find($this->user_id);
 
         return [
             'id' => $this->id,

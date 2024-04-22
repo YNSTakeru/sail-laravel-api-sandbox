@@ -45,6 +45,7 @@ Route::middleware('auth:api')->group(function () {
         Route::put('/{slug}/favorite', [ArticleController::class, 'updateFavorite']);
         Route::controller(CommentController::class)->group(function () {
             Route::post('/{slug}/comments', 'store');
+            Route::delete('/{slug}/comments/{id}', 'destroy');
         });
     });
 });

@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
-
     public function index(Request $request, $id)
     {
         $article = Article::where('slug', $id)->firstOrFail();
-        $comments = $article->comments()->latest()->get();
+        $comments = $article->comments;
+
 
         return new CommentCollection($comments);
     }
@@ -34,5 +34,10 @@ class CommentController extends Controller
 
 
         return new CommentResource($comment);
+    }
+
+    public function destroy($id)
+    {
+        return response()->json([$id]);
     }
 }

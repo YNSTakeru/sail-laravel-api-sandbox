@@ -61,8 +61,6 @@ class ArticleController extends Controller
             }
         }
 
-
-
         return new ArticleCollection($articles, $loggedInUser);
     }
 
@@ -102,12 +100,16 @@ class ArticleController extends Controller
 
     public function update(UpdateArticleRequest $request, Article $article)
     {
+        $user = Auth::user() ? Auth::user() : $request->user;
+
         $validated = $request->validated()['article'];
-        $validated['slug'] = \Str::slug($validated['title']);
+        if(isset($validated['title'])) {
+            $validated['slug'] = \Str::slug($validated['title']);
+        }
 
         $article->update($validated);
 
-        return new ArticleResource($article);
+        return new ArticleResource($article, $user);
     }
 
     public function destroy(Request $request, Article $article)
@@ -117,25 +119,9 @@ class ArticleController extends Controller
         return response()->noContent();
     }
 
-    public function updateFavorite(Request $request, $id)
-    {
-        $user = Auth::user();
-        $article = Article::find($id);
-
-        if($user->favoriteArticles()->where('article_id', $article->id)->exists()) {
-            $user->favoriteArticles()->detach($article->id);
-            $article->favoriteUsers()->detach($user->id);
-        } else {
-            $user->favoriteArticles()->syncWithoutDetaching($article->id);
-            $article->favoriteUsers()->syncWithoutDetaching($user->id);
-        }
-
-        return response()->noContent();
-    }
-
     public function favorite(Request $request, $slug)
     {
-        $user = Auth::user();
+        $user = Auth::user() ? Auth::user() : $request->user;
         $article = Article::where('slug', $slug)->firstOrFail();
 
         if($user->favoriteArticles()->where('article_id', $article->id)->exists()) {
@@ -145,12 +131,12 @@ class ArticleController extends Controller
         $user->favoriteArticles()->syncWithoutDetaching($article->id);
         $article->favoriteUsers()->syncWithoutDetaching($user->id);
 
-        return new ArticleResource($article);
+        return new ArticleResource($article, $user);
     }
 
     public function unfavorite(Request $request, $slug)
     {
-        $user = Auth::user();
+        $user = Auth::user() ? Auth::user() : $request->user;
         $article = Article::where('slug', $slug)->firstOrFail();
 
         if(!$user->favoriteArticles()->where('article_id', $article->id)->exists()) {
@@ -160,7 +146,7 @@ class ArticleController extends Controller
         $user->favoriteArticles()->detach($article->id);
         $article->favoriteUsers()->detach($user->id);
 
-        return new ArticleResource($article);
+        return new ArticleResource($article, $user);
     }
 
     public function feed(Request $request)

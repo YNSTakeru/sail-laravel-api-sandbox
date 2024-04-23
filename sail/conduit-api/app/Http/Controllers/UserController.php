@@ -28,8 +28,11 @@ class UserController extends Controller
      */
     public function show(Request $request)
     {
-        $user = $request->user;
-        return new UserResource($user);
+        $user = Auth::user();
+        // headerのtokenを取得
+        $token = str_replace('Bearer ', '', $request->header('Authorization'));
+
+        return new UserResource($user, $token);
     }
 
     /**
@@ -37,7 +40,9 @@ class UserController extends Controller
      */
     public function update(Request $request)
     {
-        $user = $request->user;
+        $user = Auth::user();
+
+        $token = str_replace('Bearer ', '', $request->header('Authorization'));
 
         $validated = $request->validate([
             'user.email' => 'sometimes|required|email|unique:users,email,' . $user->id,
@@ -59,7 +64,7 @@ class UserController extends Controller
 
         $user->save();
 
-        return new UserResource($user);
+        return new UserResource($user, $token);
     }
 
     /**

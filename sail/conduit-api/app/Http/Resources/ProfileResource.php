@@ -9,6 +9,15 @@ use Illuminate\Support\Facades\Auth;
 class ProfileResource extends JsonResource
 {
     public static $wrap = 'profile';
+
+    protected $following;
+
+    public function __construct($resource, $following=null)
+    {
+        parent::__construct($resource);
+        $this->following = $following;
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -17,17 +26,13 @@ class ProfileResource extends JsonResource
     public function toArray(Request $request): array
     {
 
-        $following = false;
-        $user = Auth::guard('api')->user();
-        if ($user) {
-            $following = $user->followers->contains($this->id) ? true : false;
-        }
+
 
         return [
             'username' => $this->username,
             'bio' => $this->bio,
             'image' => $this->image,
-            'following' => $following,
+            'following' => $this->following,
         ];
     }
 }

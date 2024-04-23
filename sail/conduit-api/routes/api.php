@@ -24,7 +24,7 @@ Route::post('users/login', [AuthController::class, 'login']);
 Route::post('users', [AuthController::class, 'register']);
 
 
-Route::middleware('optional_auth')->get('articles/feed', [ArticleController::class, 'feed']);
+Route::middleware('auth:api')->get('articles/feed', [ArticleController::class, 'feed']);
 
 Route::apiResource('articles', ArticleController::class)->only(['index', 'show']);
 
@@ -36,7 +36,7 @@ Route::apiResource('tags', TagController::class)->only(['index']);
 
 Route::get('articles/{slug}/comments', [CommentController::class, 'index']);
 
-Route::middleware('optional_auth')->group(function () {
+Route::middleware('auth:api')->group(function () {
     Route::prefix('user')->controller(UserController::class)->group(function () {
         Route::get('', 'show');
         Route::put('', 'update');

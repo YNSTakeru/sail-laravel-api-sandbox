@@ -5,13 +5,27 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ProfileResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
     public function show($id)
     {
+
+        $loggedInUser = Auth::guard('api')->user();
+
+
         $user = User::where('username', $id)->firstOrFail();
-        return new ProfileResource($user);
+
+        if($loggedInUser) {
+            // $loggedInUserが$userをフォローしているかどうか
+            $following = $loggedInUser->following()->find($user->id);
+            if($following) {
+                return new ProfileResource($user, true);
+            }
+        }
+
+        return new ProfileResource($user, false);
     }
 
     public function follow($id)
@@ -30,7 +44,8 @@ class ProfileController extends Controller
 
         $user->following()->syncWithoutDetaching([$userToFollow->id]);
         $userToFollow->followers()->syncWithoutDetaching([$user->id]);
-        return new ProfileResource($userToFollow);
+
+        return new ProfileResource($userToFollow, true);
     }
 
     public function unfollow($id)
@@ -47,6 +62,6 @@ class ProfileController extends Controller
         $user->following()->detach([$userToUnfollow->id]);
         $userToUnfollow->followers()->detach([$user->id]);
 
-        return new ProfileResource($userToUnfollow);
+        return new ProfileResource($userToUnfollow, false);
     }
 }

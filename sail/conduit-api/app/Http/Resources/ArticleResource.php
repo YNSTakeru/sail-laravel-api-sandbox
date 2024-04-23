@@ -11,6 +11,15 @@ use Illuminate\Support\Facades\Auth;
 class ArticleResource extends JsonResource
 {
     public static $wrap = 'article';
+    protected $user;
+
+    public function __construct($resource, $user = null)
+    {
+        parent::__construct($resource);
+        $this->user = $user;
+    }
+
+
     /**
      * Transform the resource into an array.
      *
@@ -19,7 +28,7 @@ class ArticleResource extends JsonResource
 
     public function toArray($request): array
     {
-        $user = Auth::guard('api')->user();
+        $user = $this->user;
         $isAuthenticated = $user ? true : false;
         $favorited = false;
 

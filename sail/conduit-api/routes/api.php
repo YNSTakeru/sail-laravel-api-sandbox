@@ -24,7 +24,7 @@ Route::post('users/login', [AuthController::class, 'login']);
 Route::post('users', [AuthController::class, 'register']);
 
 
-Route::middleware('auth:api')->get('articles/feed', [ArticleController::class, 'feed']);
+Route::middleware('optional_auth')->get('articles/feed', [ArticleController::class, 'feed']);
 
 Route::apiResource('articles', ArticleController::class)->only(['index', 'show']);
 

@@ -8,6 +8,13 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 class ArticleCollection extends ResourceCollection
 {
     public static $wrap = 'articles';
+    protected $user;
+
+    public function __construct($resource, $user = null)
+    {
+        parent::__construct($resource);
+        $this->user = $user;
+    }
 
     /**
      * Transform the resource collection into an array.
@@ -18,7 +25,9 @@ class ArticleCollection extends ResourceCollection
     {
 
         return [
-            'articles' => $this->collection,
+            'articles' => $this->collection->map(function ($article) {
+                return (new ArticleResource($article, $this->user));
+            }),
             'articlesCount' => $this->collection->count(),
         ];
     }

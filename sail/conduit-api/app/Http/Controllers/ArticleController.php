@@ -17,6 +17,7 @@ class ArticleController extends Controller
 {
     public function index(Request $request)
     {
+        $loggedInUser = Auth::user()? Auth::user() : $request->user;
 
         $limit = $request->get('limit', 20);
         $offset = $request->get('offset', 0);
@@ -52,8 +53,17 @@ class ArticleController extends Controller
 
         $articles = $query->paginate($limit, ['*'], 'page', $page);
 
+        if($tag) {
+            foreach($articles as $article) {
+                $article->tags = $article->tags->sortByDesc(function ($t) use ($tag) {
+                    return $t->name === $tag ? 1 : 0;
+                })->values();
+            }
+        }
 
-        return new ArticleCollection($articles);
+
+
+        return new ArticleCollection($articles, $loggedInUser);
     }
 
     public function show(Request $request, Article $article)
@@ -63,6 +73,9 @@ class ArticleController extends Controller
 
     public function store(StoreArticleRequest $request)
     {
+
+        $user = Auth::user() ? Auth::user() : $request->user;
+
         $validated = $request->validated();
         $validated['article']['slug'] = \Str::slug($validated['article']['title']);
         $tagIds = [];
@@ -78,13 +91,13 @@ class ArticleController extends Controller
 
         unset($validated['article']['tagList']);
 
-        $article = Auth::user()->articles()->create($validated['article']);
+        $article = $user->articles()->create($validated['article']);
 
         if(count($tagIds) > 0) {
             $article->tags()->sync($tagIds);
         }
 
-        return new ArticleResource($article);
+        return new ArticleResource($article, $user);
     }
 
     public function update(UpdateArticleRequest $request, Article $article)
@@ -157,7 +170,7 @@ class ArticleController extends Controller
         $offset = $request->get('offset', 0);
         $page = floor($offset / $limit) + 1;
 
-        $user = Auth::user();
+        $user = Auth::user() ? Auth::user() : $request->user;
 
         $query = QueryBuilder::for(Article::class)
         ->defaultSort('-created_at')->allowedSorts(['title', 'description', 'body'])->whereHas('author', function ($query) use ($user) {
@@ -167,6 +180,6 @@ class ArticleController extends Controller
         $articles = $query->paginate($limit, ['*'], 'page', $page);
 
 
-        return new ArticleCollection($articles);
+        return new ArticleCollection($articles, $user);
     }
 }

@@ -9,13 +9,7 @@ php artisan key:generate
 php artisan jwt:secret
 touch .env.testing
 ```
-`.env.testing`ファイルを作成して以下を記入
 
-```bash
-DB_CONNECTION=sqlite
-DB_DATABASE=:memory:
-JWT_SECRET={{php artisan jwt:secretで生成した文字列}}
-```
 
 ```bash
 sail up -d
@@ -29,5 +23,31 @@ docker ps
 
 ## 確認できたら
 ```bash
-sail artisan migrate:fresh --seed
+sail artisan migrate:fresh
+```
+
+## ポストマンテスト
+
+```bash
+APIURL=http://localhost/api ./postman_test/run-api-test.sh
+```
+
+## Create Articleのテスト
+
+
+`.env.testing`ファイルを作成して以下を記入
+
+
+```bash
+touch .env.testing
+```
+
+```bash
+DB_CONNECTION=sqlite
+DB_DATABASE=:memory:
+JWT_SECRET={{php artisan jwt:secretで生成した文字列}}
+```
+
+```bash
+XDEBUG_MODE=coverage sail artisan test --coverage
 ```

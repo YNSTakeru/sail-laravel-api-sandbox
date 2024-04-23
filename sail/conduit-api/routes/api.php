@@ -36,7 +36,7 @@ Route::apiResource('tags', TagController::class)->only(['index']);
 
 Route::get('articles/{slug}/comments', [CommentController::class, 'index']);
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware('optional_auth')->group(function () {
     Route::prefix('user')->controller(UserController::class)->group(function () {
         Route::get('', 'show');
         Route::put('', 'update');

@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('users/login', [AuthController::class, 'login']);
 Route::post('users', [AuthController::class, 'register']);
 
-
+Route::get('articles/page', [ArticleController::class, 'page']);
 Route::middleware('auth:api')->get('articles/feed', [ArticleController::class, 'feed']);
 
 Route::apiResource('articles', ArticleController::class)->only(['index', 'show']);
@@ -33,8 +33,14 @@ Route::apiResource('profiles', ProfileController::class)->only(['show']);
 
 Route::apiResource('tags', TagController::class)->only(['index']);
 
+Route::get('tags/popular', [TagController::class, 'popular']);
 
-Route::get('articles/{slug}/comments', [CommentController::class, 'index']);
+
+Route::prefix('articles')->group(function () {
+    Route::get('/{slug}/comments', [CommentController::class, 'index']);
+});
+
+
 
 Route::middleware('auth:api')->group(function () {
     Route::prefix('user')->controller(UserController::class)->group(function () {

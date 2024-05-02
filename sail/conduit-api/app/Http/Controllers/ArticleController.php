@@ -21,6 +21,21 @@ class ArticleController extends Controller
         return ArticleService::getArticles($request);
     }
 
+    public function page(Request $request)
+    {
+        $limit = $request->get('limit', 20);
+        $offset = $request->get('offset', 0);
+        $page = floor($offset / $limit) + 1;
+
+        $total = Article::count();
+        $totalPage = $total / 20;
+
+        return response()->json([
+            'currentPage' => $page,
+            'totalPages' => $totalPage
+        ]);
+    }
+
     public function show(Request $request, Article $article)
     {
         return new ArticleResource($article);

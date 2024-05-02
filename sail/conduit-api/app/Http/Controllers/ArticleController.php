@@ -88,6 +88,12 @@ class ArticleController extends Controller
         $user->favoriteArticles()->syncWithoutDetaching($article->id);
         $article->favoriteUsers()->syncWithoutDetaching($user->id);
 
+        $tags = $article->tags;
+
+        foreach($tags as $tag) {
+            $tag->increment('favorite_count');
+        }
+
         return new ArticleResource($article, $user);
     }
 
@@ -102,6 +108,12 @@ class ArticleController extends Controller
 
         $user->favoriteArticles()->detach($article->id);
         $article->favoriteUsers()->detach($user->id);
+
+        $tags = $article->tags;
+
+        foreach($tags as $tag) {
+            $tag->decrement('favorite_count');
+        }
 
         return new ArticleResource($article, $user);
     }

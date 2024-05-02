@@ -16,12 +16,10 @@ class ArticleTagPivotSeeder extends Seeder
     {
         $articles = Article::all();
 
-        foreach($articles as $article)
-        {
+        foreach($articles as $article) {
             $tags = Tag::inRandomOrder()->take(rand(1, 3))->get();
 
-            foreach($tags as $tag)
-            {
+            foreach($tags as $tag) {
                 $article->tags()->attach([$tag->id]);
             }
         }

@@ -31,11 +31,11 @@ class UserFavoriteArticlePIvotSeeder extends Seeder
             $users = User::inRandomOrder()->take(rand(1, User::count()))->get();
             foreach($users as $user) {
                 $article->favoriteUsers()->syncWithoutDetaching([$user->id]);
+            }
 
-                $tags = $article->tags;
-                foreach($tags as $tag) {
-                    $tag->increment('favorite_count', $article->favoriteUsers()->count());
-                }
+            $tags = $article->tags;
+            foreach($tags as $tag) {
+                $tag->increment('favorite_count', $article->favoriteUsers()->count());
             }
         }
     }

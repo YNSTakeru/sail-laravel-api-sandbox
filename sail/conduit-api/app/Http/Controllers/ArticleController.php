@@ -27,7 +27,9 @@ class ArticleController extends Controller
         $offset = $request->get('offset', 0);
         $page = floor($offset / $limit) + 1;
 
-        $total = Article::count();
+        $query = ArticleService::buildQuery($request);
+
+        $total = $query->count();
         $totalPage = $total / 20;
 
         return response()->json([

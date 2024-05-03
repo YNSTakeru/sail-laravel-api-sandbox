@@ -30,7 +30,7 @@ class ArticleService
 
         return new ArticleCollection($articles, $loggedInUser);
     }
-    private static function buildQuery(Request $request)
+    public static function buildQuery(Request $request)
     {
         $query = QueryBuilder::for(Article::class)
         ->defaultSort('-created_at')->allowedSorts(['title', 'description', 'body']);

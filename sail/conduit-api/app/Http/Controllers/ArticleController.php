@@ -30,7 +30,8 @@ class ArticleController extends Controller
         $query = ArticleService::buildQuery($request);
 
         $total = $query->count();
-        $totalPage = $total / 20;
+        $totalPage = ceil($total / 20);
+
 
         return response()->json([
             'currentPage' => $page,

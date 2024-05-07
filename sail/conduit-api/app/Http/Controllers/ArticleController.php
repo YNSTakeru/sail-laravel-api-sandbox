@@ -21,6 +21,24 @@ class ArticleController extends Controller
         return ArticleService::getArticles($request);
     }
 
+    public function page(Request $request)
+    {
+        $limit = $request->get('limit', 20);
+        $offset = $request->get('offset', 0);
+        $page = floor($offset / $limit) + 1;
+
+        $query = ArticleService::buildQuery($request);
+
+        $total = $query->count();
+        $totalPage = ceil($total / 20);
+
+
+        return response()->json([
+            'currentPage' => $page,
+            'totalPages' => $totalPage
+        ]);
+    }
+
     public function show(Request $request, Article $article)
     {
         return new ArticleResource($article);
@@ -88,6 +106,12 @@ class ArticleController extends Controller
         $user->favoriteArticles()->syncWithoutDetaching($article->id);
         $article->favoriteUsers()->syncWithoutDetaching($user->id);
 
+        $tags = $article->tags;
+
+        foreach($tags as $tag) {
+            $tag->increment('favorite_count');
+        }
+
         return new ArticleResource($article, $user);
     }
 
@@ -102,6 +126,12 @@ class ArticleController extends Controller
 
         $user->favoriteArticles()->detach($article->id);
         $article->favoriteUsers()->detach($user->id);
+
+        $tags = $article->tags;
+
+        foreach($tags as $tag) {
+            $tag->decrement('favorite_count');
+        }
 
         return new ArticleResource($article, $user);
     }

@@ -14,4 +14,11 @@ class TagController extends Controller
 
         return new TagCollection($tags);
     }
+
+    public function popular()
+    {
+        $tags = Tag::orderBy('favorite_count', 'desc')->limit(10)->get();
+
+        return new TagCollection($tags);
+    }
 }

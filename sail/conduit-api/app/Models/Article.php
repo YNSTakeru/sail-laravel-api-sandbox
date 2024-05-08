@@ -24,7 +24,6 @@ class Article extends Model
         'updated_at'
     ];
 
-    // Article.php
     public function getRouteKeyName()
     {
         return 'slug';

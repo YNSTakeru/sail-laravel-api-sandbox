@@ -41,7 +41,8 @@ class ArticleController extends Controller
 
     public function show(Request $request, Article $article)
     {
-        return new ArticleResource($article);
+        $loggedInUser = Auth::user();
+        return new ArticleResource($article, $loggedInUser);
     }
 
     public function store(StoreArticleRequest $request)

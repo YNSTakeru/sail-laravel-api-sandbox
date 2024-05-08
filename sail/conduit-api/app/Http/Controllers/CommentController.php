@@ -14,7 +14,7 @@ class CommentController extends Controller
     public function index(Request $request, $id)
     {
         $article = Article::where('slug', $id)->firstOrFail();
-        $comments = $article->comments;
+        $comments = $article->comments()->orderBy('created_at', 'desc')->get();
 
 
         return new CommentCollection($comments);

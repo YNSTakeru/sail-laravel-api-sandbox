@@ -84,6 +84,18 @@ class ArticleController extends Controller
 
         $article->update($validated);
 
+        if(isset($validated['tagList'])) {
+            $tagIdList = [];
+            foreach($validated['tagList'] as $tagName) {
+                $tag = Tag::firstOrCreate(['name' => $tagName]);
+                $tagIdList[] = $tag->id;
+            }
+
+
+            $article->tags()->sync($tagIdList);
+        }
+
+
         return new ArticleResource($article, $user);
     }
 

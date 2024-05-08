@@ -25,6 +25,7 @@ class UpdateArticleRequest extends FormRequest
             'article.title' => 'required|sometimes|max:255|unique:articles,title,i',
             'article.description' => 'required|sometimes|max:255',
             'article.body' => 'required|sometimes|max:1000',
+            'article.tagList' => 'required|sometimes|array',
         ];
     }
 }

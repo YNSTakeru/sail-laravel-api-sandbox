@@ -3,7 +3,7 @@
     "builds": [
         {
             "src": "/api/index.php",
-            "use": "vercel-php@0.7.0"
+            "use": "vercel-php@0.6.0"
         },
         {
             "src": "/public/**",
@@ -30,6 +30,7 @@
     ],
     "env": {
         "APP_NAME": "Laravel",
+        "APP_ENV": "production",
         "APP_DEBUG": "false",
         "DB_CONNECTION": "mysql",
         "DB_HOST": "mysql",
